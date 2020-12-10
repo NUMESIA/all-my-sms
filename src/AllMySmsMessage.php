@@ -31,6 +31,27 @@ class AllMySmsMessage
     public $campaign;
 
     /**
+     * The (optional) login name.
+     *
+     * @var string|null
+     */
+    public $login;
+
+    /**
+     * The (optional) api key.
+     *
+     * @var string|null
+     */
+    public $apiKey;
+
+    /**
+     * The (optional) format.
+     *
+     * @var string|null
+     */
+    public $format;
+
+    /**
      * The (optional) date the message should sent at.
      *
      * @var string|null
@@ -103,6 +124,45 @@ class AllMySmsMessage
     }
 
     /**
+     * Set the login name.
+     *
+     * @param  string  $login
+     * @return $this
+     */
+    public function login(string $login)
+    {
+        $this->login = $login;
+
+        return $this;
+    }
+
+    /**
+     * Set the api key.
+     *
+     * @param  string  $apiKey
+     * @return $this
+     */
+    public function apiKey(string $apiKey)
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
+    /**
+     * Set the format.
+     *
+     * @param  string  $format
+     * @return $this
+     */
+    public function format(string $format)
+    {
+        $this->format = $format;
+
+        return $this;
+    }
+
+    /**
      * Set the date the message should sent at.
      *
      * @param  \DateTimeInterface|string  $sendAt
@@ -141,10 +201,13 @@ class AllMySmsMessage
     public function toArray(): array
     {
         return [
-            'message' => $this->content,
-            'sender' => $this->sender,
-            'campaign' => $this->campaign,
-            'date' => $this->sendAt,
+            'message'    => $this->content,
+            'sender'     => $this->sender,
+            'campaign'   => $this->campaign,
+            'login'      => $this->login,
+            'apiKey'     => $this->apiKey,
+            'format'     => $this->format,
+            'date'       => $this->sendAt,
             'parameters' => $this->parameters,
         ];
     }

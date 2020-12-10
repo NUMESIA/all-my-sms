@@ -128,9 +128,9 @@ class AllMySms
         }
 
         return [
-            'login' => $this->config['login'],
-            'apiKey' => $this->config['api_key'],
-            'returnformat' => $this->config['format'],
+            'login' => data_get($data, 'login') ?? $this->config['login'],
+            'apiKey' => data_get($data, 'apiKey') ?? $this->config['api_key'],
+            'returnformat' => data_get($data, 'format') ?? $this->config['format'],
             'smsData' => json_encode($sms),
         ];
     }
