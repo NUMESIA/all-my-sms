@@ -8,6 +8,6 @@ class CouldNotSendNotification extends \Exception
 {
     public static function serviceRespondedWithAnError(ResponseInterface $response)
     {
-        return new static('AllMySms responded with an error: `'.$response->getReasonPhrase().'`');
+        return new static('AllMySms responded with an error: `'.$response->getReasonPhrase().'`, status ['.$response->getStatusCode().']');
     }
 }
