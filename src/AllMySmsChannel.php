@@ -65,7 +65,7 @@ class AllMySmsChannel
 
         $response = $this->client->sendSms($to, $message->toArray(), $this->sender);
 
-        if ($response->getStatusCode() !== 200 || $response->getStatusCode() !== 201) {
+        if ($response->getStatusCode() != 200 || $response->getStatusCode() != 201) {
             throw CouldNotSendNotification::serviceRespondedWithAnError($response);
         }
     }
