@@ -6,6 +6,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\RequestOptions;
 use Log;
 use Psr\Http\Message\ResponseInterface;
+use Carbon\Carbon;
 
 class AllMySms
 {
@@ -76,7 +77,7 @@ class AllMySms
     {
         Log::debug(
             'Sent SMS via AllMySms' . PHP_EOL .
-            'Date: ' . Carbon\Carbon::now()->format('Y-m-d H:i:s') . PHP_EOL .
+            'Date: ' . Carbon::now()->format('Y-m-d H:i:s') . PHP_EOL .
             'Sender: ' . $sender . PHP_EOL .
             'To: ' . $to . PHP_EOL .
             'Message: ' . $data['message']
