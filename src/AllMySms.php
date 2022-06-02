@@ -71,9 +71,9 @@ class AllMySms
      * @param  string  $to
      * @param  array  $data
      * @param  string|null  $sender
-     * @return \Psr\Http\Message\ResponseInterface|null
+     * @return void
      */
-    public function logSms(string $to, array $data,  ? string $sender = null) :  ? ResponseInterface
+    public function logSms(string $to, array $data,  ? string $sender = null)
     {
         Log::debug(
             'Sent SMS via AllMySms' . PHP_EOL .
