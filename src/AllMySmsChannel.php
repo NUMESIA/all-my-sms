@@ -63,6 +63,10 @@ class AllMySmsChannel
             $message = new AllMySmsMessage($message);
         }
 
+        if (env('ALL_MY_SMS_SANDBOX', false) === true) {
+            return $this->client->logSms($to, $message->toArray(), $this->sender);
+        }
+
         $response = $this->client->sendSms($to, $message->toArray(), $this->sender);
 
         if ($response->getStatusCode() != 200 && $response->getStatusCode() != 201) {

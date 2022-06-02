@@ -4,6 +4,7 @@ namespace NotificationChannels\AllMySms;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\RequestOptions;
+use Log;
 use Psr\Http\Message\ResponseInterface;
 
 class AllMySms
@@ -30,7 +31,7 @@ class AllMySms
      */
     public function __construct(HttpClient $http, array $config)
     {
-        $this->http = $http;
+        $this->http   = $http;
         $this->config = $config;
     }
 
@@ -52,26 +53,45 @@ class AllMySms
      * @param  string|null  $sender
      * @return \Psr\Http\Message\ResponseInterface|null
      */
-    public function sendSms(string $to, array $data, ?string $sender = null): ?ResponseInterface
+    public function sendSms(string $to, array $data,  ? string $sender = null) :  ? ResponseInterface
     {
         $response = $this->httpClient()->post($this->getFullUrl('sendSms'), [
             RequestOptions::FORM_PARAMS => $this->formatRequest($to, $data, $sender),
         ]);
 
         return $response->getStatusCode() === 200
-            ? $this->checkResponseAndReturn($response)
-            : $response;
+        ? $this->checkResponseAndReturn($response)
+        : $response;
     }
 
-    protected function checkResponseAndReturn(ResponseInterface $response): ResponseInterface
+    /**
+     * Log the sms.
+     *
+     * @param  string  $to
+     * @param  array  $data
+     * @param  string|null  $sender
+     * @return \Psr\Http\Message\ResponseInterface|null
+     */
+    public function logSms(string $to, array $data,  ? string $sender = null) :  ? ResponseInterface
+    {
+        Log::debug(
+            'Sent SMS via AllMySms' . PHP_EOL .
+            'Date: ' . Carbon\Carbon::now()->format('Y-m-d H:i:s') . PHP_EOL .
+            'Sender: ' . $sender . PHP_EOL .
+            'To: ' . $to . PHP_EOL .
+            'Message: ' . $data['message']
+        );
+    }
+
+    protected function checkResponseAndReturn(ResponseInterface $response) : ResponseInterface
     {
         $content = json_decode($response->getBody()->getContents());
 
         $code = data_get($content, 'status');
 
         return $code === 100
-            ? $response
-            : $response->withStatus(400, data_get($content, 'statusText', 'An error occurred!'));
+        ? $response
+        : $response->withStatus(400, data_get($content, 'statusText', 'An error occurred!'));
     }
 
     /**
@@ -80,9 +100,9 @@ class AllMySms
      * @param  string  $path
      * @return string
      */
-    protected function getFullUrl(string $path): string
+    protected function getFullUrl(string $path) : string
     {
-        return trim($this->config['uri'], '/').'/'.ltrim($path, '/');
+        return trim($this->config['uri'], '/') . '/' . ltrim($path, '/');
     }
 
     /**
@@ -93,9 +113,9 @@ class AllMySms
      * @param  string|null  $sender
      * @return array
      */
-    protected function formatRequest(string $to, array $data, ?string $sender = null): array
+    protected function formatRequest(string $to, array $data,  ? string $sender = null) : array
     {
-        $index = 1;
+        $index      = 1;
         $parameters = collect(data_get($data, 'parameters', []))->mapWithKeys(function ($item) use (&$index) {
             return ["PARAM_{$index}" => $item];
         })->toArray();
@@ -103,7 +123,7 @@ class AllMySms
         $sms = [
             'DATA' => [
                 'MESSAGE' => $data['message'],
-                'SMS' => [
+                'SMS'     => [
                     array_merge([
                         'MOBILEPHONE' => $to,
                     ], $parameters),
@@ -111,7 +131,7 @@ class AllMySms
             ],
         ];
 
-        if (! empty($parameters)) {
+        if (!empty($parameters)) {
             $sms['DATA']['DYNAMIC'] = count($parameters);
         }
 
@@ -128,10 +148,10 @@ class AllMySms
         }
 
         return [
-            'login' => data_get($data, 'login') ?? $this->config['login'],
-            'apiKey' => data_get($data, 'apiKey') ?? $this->config['api_key'],
+            'login'        => data_get($data, 'login') ?? $this->config['login'],
+            'apiKey'       => data_get($data, 'apiKey') ?? $this->config['api_key'],
             'returnformat' => data_get($data, 'format') ?? $this->config['format'],
-            'smsData' => json_encode($sms),
+            'smsData'      => json_encode($sms),
         ];
     }
 }
