@@ -1,5 +1,5 @@
 {
-    "name": "laravel-notification-channels/all-my-sms",
+    "name": "numesia/all-my-sms",
     "description": "AllMySms Notifications driver",
     "homepage": "https://github.com/laravel-notification-channels/all-my-sms",
     "license": "MIT",
