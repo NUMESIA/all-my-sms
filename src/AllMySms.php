@@ -56,9 +56,15 @@ class AllMySms
      */
     public function sendSms(string $to, array $data,  ? string $sender = null) :  ? ResponseInterface
     {
-        $response = $this->httpClient()->post($this->getFullUrl('sendSms'), [
-            RequestOptions::FORM_PARAMS => $this->formatRequest($to, $data, $sender),
-        ]);
+        $params = [
+            RequestOptions::FORM_PARAMS => $this->formatRequest($to, $data, $sender)
+        ];
+
+        if (env('PROXY_HOST')) {
+            $params[RequestOptions::PROXY] = "http://" . env('PROXY_LOGIN') . ":" . env('PROXY_PASSWORD') . "@" . env('PROXY_HOST') . ":" . env('PROXY_PORT');
+        }
+
+        $response = $this->httpClient()->post($this->getFullUrl('sendSms'), $params);
 
         return $response->getStatusCode() === 200
         ? $this->checkResponseAndReturn($response)
